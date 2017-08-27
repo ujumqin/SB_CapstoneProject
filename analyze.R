@@ -1,4 +1,4 @@
-score.sentiment = function(sentences, good_text, bad_text, .progress='none')
+score.sentiment <- function(sentences, good_text, bad_text, .progress='none')
 {
   require(plyr)
   require(stringr)
@@ -14,9 +14,10 @@ score.sentiment = function(sentences, good_text, bad_text, .progress='none')
     sentence = gsub('\\d+', '', sentence)
     #to remove emojis
     sentence <- iconv(sentence, 'UTF-8', 'ASCII')
-    sentence = tolower(sentence)        
+    sentence = tolower(sentence)
+    
     # split into words. str_split is in the stringr package
-    word.list = str_split(sentence, '\s+')
+    word.list = str_split(sentence, '\\s+')
     # sometimes a list() is one level of hierarchy too much
     words = unlist(word.list)
     
