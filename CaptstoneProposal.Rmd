@@ -1,0 +1,38 @@
+---
+title: "Springboard Capstone Project"
+author: "Sine Gov"
+date: "September 6, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## What is the problem you want to solve?
+One of the most difficult things about game design is knowing you made the right design choices. In a game that is ever changing, this can become a compounding problem since every ‘negative’ change can cause a loss of trust with the player base. With Enough negative changes to a game can have a lasting impact on the perception of the game from the community and this can directly translate into profitability of the game due to players no longer engaging in the product.
+
+Many games today are ever changing with new product updates and improvements. The difficulty in this process is predicting whether a design choice will be received well by the players; often times something seems good on paper, but in practice is unpopular. Through post mortems, designers discuss how changes were received by players and discuss why they were received in such a way. Data is usually gathered through social media and is done manually. 
+ 
+Social media sites have lots data that can be difficult to parse and process. Another difficultly is knowing where to start when it comes to social media data. In this project, I would like to give the client an overview of the social media data. This data will help the design team to understand the overall sentiment of the community more quickly and in real time.
+
+##	Who is your client and why do they care about this problem? In other words, what will your client DO or DECIDE based on your analysis that they wouldn’t have otherwise?
+My target client will be the game design team making Overwatch. This data will help them gain a more thorough understanding of the communities that have formed around their game. Additionally it will allow them to see reactions from the community more quickly which will allow them react quicker to negative changes and free up time to plan enhancements.
+
+##	What data are you going to use for this? How will you acquire this data?
+I will use social media to collect data. I plan on using Twitter, reddit, tumblr, fan sites, and the official game forums. Using the recent patch notes for Overwatch, I’ll scrape these sites, using a web crawler, for conversations regarding the recent changes. Sentiment and themes will be generated from this data to give the game designers an ideal of how the players are reacting to the patch.
+
+##	In brief, outline your approach to solving this problem (knowing that this might change later).
+1.	Scrape social media sites using web crawlers built in R.
+2.	Organize the scraped data.
+  a.	Each row will be an entry from social media. The columns will contain information regarding several things. (source, patch note item, sentiment of comment, key words, etc.)
+3.	Train the computer to pull out common/most talked about themes.
+4.	Visualize the data in the following:
+  a.	Icon/representation of sentiment coded according to color (gradients of red = negative. Gradients of blue = positive)
+  b.	Themes listed out under icon/representation.
+
+##	What are your deliverables? Typically, this would include code, along with a paper and/or a slide deck.
+1. Code to scrape, organize, and process data.
+2. Paper outlining the process above.
+3. Charts visualizing the information.
+

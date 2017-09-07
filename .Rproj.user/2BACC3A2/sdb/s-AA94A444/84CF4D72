@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"Springboard Capstone Project\"\nauthor: \"Sine Gov\"\ndate: \"September 6, 2017\"\noutput: html_document\n---\n\n```{r setup, include=FALSE}\nknitr::opts_chunk$set(echo = TRUE)\n```\n\n## What is the problem you want to solve?\nOne of the most difficult things about game design is knowing you made the right design choices. In a game that is ever changing, this can become a compounding problem since every ‘negative’ change can cause a loss of trust with the player base. With Enough negative changes to a game can have a lasting impact on the perception of the game from the community and this can directly translate into profitability of the game due to players no longer engaging in the product.\n\nMany games today are ever changing with new product updates and improvements. The difficulty in this process is predicting whether a design choice will be received well by the players; often times something seems good on paper, but in practice is unpopular. Through post mortems, designers discuss how changes were received by players and discuss why they were received in such a way. Data is usually gathered through social media and is done manually. \n \nSocial media sites have lots data that can be difficult to parse and process. Another difficultly is knowing where to start when it comes to social media data. In this project, I would like to give the client an overview of the social media data. This data will help the design team to understand the overall sentiment of the community more quickly and in real time.\n\n##\tWho is your client and why do they care about this problem? In other words, what will your client DO or DECIDE based on your analysis that they wouldn’t have otherwise?\nMy target client will be the game design team making Overwatch. This data will help them gain a more thorough understanding of the communities that have formed around their game. Additionally it will allow them to see reactions from the community more quickly which will allow them react quicker to negative changes and free up time to plan enhancements.\n\n##\tWhat data are you going to use for this? How will you acquire this data?\nI will use social media to collect data. I plan on using Twitter, reddit, tumblr, fan sites, and the official game forums. Using the recent patch notes for Overwatch, I’ll scrape these sites, using a web crawler, for conversations regarding the recent changes. Sentiment and themes will be generated from this data to give the game designers an ideal of how the players are reacting to the patch.\n\n##\tIn brief, outline your approach to solving this problem (knowing that this might change later).\n1.\tScrape social media sites using web crawlers built in R.\n2.\tOrganize the scraped data.\n  a.\tEach row will be an entry from social media. The columns will contain information regarding several things. (source, patch note item, sentiment of comment, key words, etc.)\n3.\tTrain the computer to pull out common/most talked about themes.\n4.\tVisualize the data in the following:\n  a.\tIcon/representation of sentiment coded according to color (gradients of red = negative. Gradients of blue = positive)\n  b.\tThemes listed out under icon/representation.\n\n##\tWhat are your deliverables? Typically, this would include code, along with a paper and/or a slide deck.\n1. Code to scrape, organize, and process data.\n2. Paper outlining the process above.\n3. Charts visualizing the information.\n\n",
+    "created" : 1504764430840.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2971676882",
+    "id" : "84CF4D72",
+    "lastKnownWriteTime" : 1504766499,
+    "last_content_update" : 1504766499683,
+    "path" : "~/SBCapstone/CaptstoneProposal.Rmd",
+    "project_path" : "CaptstoneProposal.Rmd",
+    "properties" : {
+        "last_setup_crc32" : "C7BB66B0bb338d19",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
