@@ -29,7 +29,7 @@ access_secret <- "QYldXZMWypffxe2zbqOf00Y92SyG9PdOkhdtfL9WVM0X7"
 setup_twitter_oauth(consumer_key, consumer_secret, access_token=access_key, access_secret=access_secret)
 
 
-1# Grab latest tweets
+# Grab latest tweets
 tweets_OW <- searchTwitter('#overwatch', n=100000)
 
 df_tweets_OW <- twListToDF(tweets_OW)
@@ -40,9 +40,9 @@ write.csv(df_tweets_OW, file = "OWT_9-22.csv")
 # Loop over tweets and extract text
 library(plyr)
 OW_tweets = ldply(tweets_OW, function(t) t$toDataFrame())
-write.csv(OW_tweets, file = "rawOWT_9-22.csv")
+write.csv(OW_tweets, file = "rawOWT_9-30.csv")
 
 #feed_OW = laply(tweets_OW, function(t) t$getText())
 
-write.csv(tweets_OW, file = "rawOWT_9-22")
+write.csv(tweets_OW, file = "rawOWT_9-30")
 #write.csv(feed_OW, file = "OW922.csv")
