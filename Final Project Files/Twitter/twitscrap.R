@@ -18,13 +18,13 @@ save(cred, file="twitter authentication.Rdata")
 load("twitter authentication.Rdata")
 #OLD- registerTwitterOAuth(cred)
 
-consumer_key <- "iIqt5d6bpRKF37RaWdyqJLAWJ"
+consumer_key <- ""
 
-consumer_secret <- "qQc7iiYZddit7EBhnJEmJmTGSyDiK3MEIWqjW1x3CwJnmy7C6u"
+consumer_secret <- ""
 
-access_key <- "396944590-saMC6Z5r1dtjLUkz7AHKQBCgIBlb9T7czf1XaCwK"
+access_key <- ""
 
-access_secret <- "QYldXZMWypffxe2zbqOf00Y92SyG9PdOkhdtfL9WVM0X7"
+access_secret <- ""
 
 setup_twitter_oauth(consumer_key, consumer_secret, access_token=access_key, access_secret=access_secret)
 
