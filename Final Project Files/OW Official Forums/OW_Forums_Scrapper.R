@@ -88,23 +88,11 @@ write.csv(ow.total, file = "hopeitworks11_21.csv")
 #----------------------
 
 
-read_single_links <- read_html(clean_links[10])
-                               
-topic_time <- read_single_links %>% html_node(".TopicPost-timestamp")
-print(topic_time)
+str(ow.total)
 
+x[!duplicated(x[,1]),]
+newow.total <- ow.total[!duplicated(ow.total[4]),]
 
-clean_time <- gsub('<.*content=\\"', "", topic_time)
-clean_time <- gsub('\">.*', "", clean_time)
-
-clean_time <- as.POSIXct(clean_time, format = "%m/%d/%Y %I:%M %p")
-print(clean_time)
-typeof(clean_time)
-clean_time <- as.numeric(clean_time)
-print(clean_time)
-NCOL(clean_time)
-
-time <- xml_contents(topic_time) %>% trimws
-print(time)
-time <- xml_contents(topic_time) %>% html_text(trim = TRUE)
-
+str(newow.total)
+write.csv(newow.total, file = "nodupes11_21.csv")           
+write.csv(ow.total, file = "withdupes11_21.csv")
