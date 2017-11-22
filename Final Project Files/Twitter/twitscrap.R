@@ -18,23 +18,23 @@ save(cred, file="twitter authentication.Rdata")
 load("twitter authentication.Rdata")
 #OLD- registerTwitterOAuth(cred)
 
-consumer_key <- ""
+consumer_key <- "iIqt5d6bpRKF37RaWdyqJLAWJ"
 
-consumer_secret <- ""
+consumer_secret <- "qQc7iiYZddit7EBhnJEmJmTGSyDiK3MEIWqjW1x3CwJnmy7C6u"
 
-access_key <- ""
+access_key <- "396944590-saMC6Z5r1dtjLUkz7AHKQBCgIBlb9T7czf1XaCwK"
 
-access_secret <- ""
+access_secret <- "QYldXZMWypffxe2zbqOf00Y92SyG9PdOkhdtfL9WVM0X7"
 
 setup_twitter_oauth(consumer_key, consumer_secret, access_token=access_key, access_secret=access_secret)
 
 
 # Grab latest tweets
 print("Grabbing tweets!!!!! Will take a second.")
-tweets_OW <- searchTwitter("#overwatch, -filter:retweets", n=100000, lang = "en")
+tweets_OW <- searchTwitter("#overwatch, -filter:retweets", n=14586, lang = "en")
 
 df_tweets_OW <- twListToDF(tweets_OW)
-write.csv(df_tweets_OW, file = "OWT_9-30_4thscrape.csv")
+write.csv(df_tweets_OW, file = "OWT_11-21_1stscrape.csv")
 
 
 
