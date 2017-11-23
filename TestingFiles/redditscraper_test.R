@@ -4,6 +4,7 @@ library(tidyr)
 library(RCurl)
 library(dplyr)
 library(curl)
+library(rebus)
 
 #Read URL
 ow.forums <- read_html("https://www.reddit.com/r/Overwatch/")
@@ -16,7 +17,7 @@ links <- as.data.frame(links, row.names = NULL)
 
 #Find the links for the forums (since links are /forums) and keep these. 
 keep<- grepl("^https://www.reddit.com/r/Overwatch/comments/", links$links)
-print(keep)
+#print(keep)
 keep <- as.data.frame(keep, row.names = NULL)
 
 #bind the answers to the new dataframe
@@ -38,7 +39,7 @@ owreddit.total <- data.frame("link", "title", "time", "text", stringsAsFactors =
 
 ###################test scrape
 print(links)
-read_single_links <- read_html(links[1])
+read_single_links <- read_html(links[5])
 #print(read_single_links)
 
 ############!!!!!!!!!!!!!!KEEEEPPP!!!!!!!!!!!!############
@@ -58,6 +59,8 @@ print(comments)
 
 
 #scrapes comment timestamp by date
+
+
 comment_time <- read_single_links %>% html_node(".tagline, time")
 comment_time <- trimws(comment_time)
 comment_time <- gsub('<.*?>', "", comment_time)
@@ -65,14 +68,17 @@ comment_time <- gsub('<.*?>', "", comment_time)
 print(comment_time)
 
 #scrapes username
-reddit_user <- read_single_links %>% html_node(".tagline, .author")
-print(reddit_user)
-reddit_user <- trimws(reddit_user)
-
-reddit_user <- gsub('<.*?>', "", reddit_user)
+read_single_links <- read_html("https://www.reddit.com/r/Overwatch/comments/7etmv9/jeff_kaplan_talks_more_junkrat_buffs/")
+reddit_user <- read_single_links %>% html_nodes(".tagline")
 print(reddit_user)
 
-write.csv(clean_time, file = "reddittime.csv")
+
+reddit_user <- gsub('.*user/', "", reddit_user)
+reddit_user <- gsub('class.*', "", reddit_user)
+reddit_user <- gsub("nchar(\\)", "", reddit_user)
+print(reddit_user)
+
+write.csv(reddit_user, file = "reddituser.csv")
 
 
 # 
