@@ -34,7 +34,7 @@ print("Grabbing tweets!!!!! Will take a second.")
 tweets_OW <- searchTwitter("#overwatch, -filter:retweets", n=14586, lang = "en")
 
 df_tweets_OW <- twListToDF(tweets_OW)
-write.csv(df_tweets_OW, file = "OWT_11-21_1stscrape.csv")
+write.csv(df_tweets_OW, file = "OWT_12-22.csv")
 
 
 

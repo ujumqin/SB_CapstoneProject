@@ -74,7 +74,7 @@ while(n <= length(clean_links)) {
   
   #adds topic to a vector with link, title using a for loop
   for(i in 1:length(clean_topic)) {
-    ow.total <- rbind(ow.total, c(clean_links[n], title, clean_time, clean_topic[i]))
+    ow.total <- rbind(ow.total, c(clean_links[n], title, clean_time[i], clean_topic[i]))
   }
   
   print(n)
