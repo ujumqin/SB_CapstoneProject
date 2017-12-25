@@ -10,70 +10,63 @@ library(caret)
 library(e1071)
 
 #read all three files into R. Ensure they are not factors
-twitter <- read.csv("all.csv", stringsAsFactors = FALSE)
-
-
-#create a df with text from all three sources
-
-
-
-str(twitter)
+all <- read.csv("all.csv", stringsAsFactors = FALSE)
 
 #duplicating the text column so we have a copy of the text
-twitter$text_topic <- twitter$text
+all$text_topic <- all$text
 
 #tokenize the text column
-tidy_twitter <- twitter %>%
-  group_by(twitter$text_topic) %>%
+tidy_all <- all %>%
+  group_by(all$text_topic) %>%
   mutate(linenumber = row_number()) %>%
   unnest_tokens(word, text) %>%
   ungroup()
 
 #get the sentiment for the tokenized words
-twitter_sentimentbing <- tidy_twitter %>%
+all_sentimentbing <- tidy_all %>%
   inner_join(get_sentiments("bing"))
 
 #create new columns to use in for loop calculations
-twitter_sentimentbing$score <- 0
-twitter_sentimentbing$count <- 1
+all_sentimentbing$score <- 0
+all_sentimentbing$count <- 1
 
 #this for loops codes the sentiment from bing into a -1 or 1. 1 is positive and -1 is negative. Also counts the number of sentiment words to be used later.
-for(i in 1:length(twitter_sentimentbing$sentiment)) {
-  if(twitter_sentimentbing$sentiment[i] == "negative") {
+for(i in 1:length(all_sentimentbing$sentiment)) {
+  if(all_sentimentbing$sentiment[i] == "negative") {
     print("negative")
-    twitter_sentimentbing$score[i] = -1
+    all_sentimentbing$score[i] = -1
   } else {
     print("positive")
-    twitter_sentimentbing$score[i] = 1
+    all_sentimentbing$score[i] = 1
   }
 }
 
 #this shows us what sentiment is for each post and groups it by post
-twitter_sentimentbing <- twitter_sentimentbing %>%
+all_sentimentbing <- all_sentimentbing %>%
   group_by(text_topic) %>%
   mutate(sentimentscore = sum(score)/sum(count))
 
 #identify the negative values
-twitter_sentimentbing$negative <- as.factor(twitter_sentimentbing$sentimentscore < 0)
-table(twitter_sentimentbing$negative)
+all_sentimentbing$negative <- as.factor(all_sentimentbing$sentimentscore < 0)
+table(all_sentimentbing$negative)
 
 #collapse the duplicated columns by text_topic
-twitter_sentimentbing <- twitter_sentimentbing[!duplicated(twitter_sentimentbing$text_topic),]
+all_sentimentbing <- all_sentimentbing[!duplicated(all_sentimentbing$text_topic),]
 
-str(twitter_sentimentbing)
+str(all_sentimentbing)
 
 #create a new df without all of the unnecessary data
-twittersentiment <- data.frame(twitter_sentimentbing$text_topic, twitter_sentimentbing$sentimentscore, twitter_sentimentbing$negative)
-names(twittersentiment) <- c("forum_text","sentiment_score","negative")
+allsentiment <- data.frame(all_sentimentbing$text_topic, all_sentimentbing$sentimentscore, all_sentimentbing$negative)
+names(allsentiment) <- c("forum_text","sentiment_score","negative")
 
 
 #test code
-write.csv(twittersentiment, file="twitterduplicatesgone.csv")
+write.csv(allsentiment, file="allduplicatesgone.csv")
 
 
 #Create a corpus and remove unnecessary words/text
 #Corpus is necessary to do predictive analytics
-owcorpus <- Corpus(VectorSource(twittersentiment$forum_text))
+owcorpus <- Corpus(VectorSource(allsentiment$forum_text))
 inspect(owcorpus[[10]])
 owcorpus <- tm_map(owcorpus, removePunctuation)
 owcorpus <- tm_map(owcorpus, tolower)
@@ -105,7 +98,7 @@ colnames(owpostSparses) = make.names(colnames(owpostSparses))
 
 write.csv(owpostSparses, file="owpostspare.csv")
 #add dependent variable
-owpostSparses$negative <- twittersentiment$negative
+owpostSparses$negative <- allsentiment$negative
 
 #setting a seed to get consistent results when running multiple times
 set.seed(1113)
