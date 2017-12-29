@@ -45,6 +45,7 @@ for(i in 1:length(reddit_sentimentbing$sentiment)) {
   }
 }
 
+
 #convert sentiment into a double since it was converted into a character somehow...
 reddit_sentimentbing$sentiment <- as.numeric(reddit_sentimentbing$sentiment)
 
@@ -59,8 +60,11 @@ reddit_sentimentbing <- reddit_sentimentbing %>%
 reddit_sentimentbing$negative <- as.factor(reddit_sentimentbing$sentimentscore < 0)
 table(reddit_sentimentbing$negative)
 
+write.csv(reddit_sentimentbing, file="reddsentibing.csv")
+str(reddit_sentimentbing)
+
 #collapse the duplicated columns by text_topic
-redditsentiment <- redditsentiment[!duplicated(redditsentiment$forum_text),]
+reddit_sentimentbing <- reddit_sentimentbing[!duplicated(reddit_sentimentbing$text_topic),]
 
 #create a new df without all of the unnecessary data
 redditsentiment <- data.frame(reddit_sentimentbing$text_topic, reddit_sentimentbing$sentimentscore, reddit_sentimentbing$negative)

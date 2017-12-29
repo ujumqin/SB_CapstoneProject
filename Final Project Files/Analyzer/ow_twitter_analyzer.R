@@ -11,7 +11,7 @@ library(e1071)
 
 #read all three files into R. Ensure they are not factors
 twitter <- read.csv("OWT_12-22.csv", stringsAsFactors = FALSE)
-str(twitter)
+
 
 #duplicating the text column so we have a copy of the text
 twitter$text_topic <- twitter$text
@@ -54,7 +54,6 @@ table(twitter_sentimentbing$negative)
 #collapse the duplicated columns by text_topic
 twitter_sentimentbing <- twitter_sentimentbing[!duplicated(twitter_sentimentbing$text_topic),]
 
-str(twitter_sentimentbing)
 
 #create a new df without all of the unnecessary data
 twittersentiment <- data.frame(twitter_sentimentbing$text_topic, twitter_sentimentbing$sentimentscore, twitter_sentimentbing$negative)

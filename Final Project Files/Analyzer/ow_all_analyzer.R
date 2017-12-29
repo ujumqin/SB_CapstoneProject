@@ -53,7 +53,7 @@ table(all_sentimentbing$negative)
 #collapse the duplicated columns by text_topic
 all_sentimentbing <- all_sentimentbing[!duplicated(all_sentimentbing$text_topic),]
 
-str(all_sentimentbing)
+
 
 #create a new df without all of the unnecessary data
 allsentiment <- data.frame(all_sentimentbing$text_topic, all_sentimentbing$sentimentscore, all_sentimentbing$negative)

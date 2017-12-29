@@ -50,13 +50,16 @@ owforums_sentimentbing <- owforums_sentimentbing %>%
 owforums_sentimentbing$negative <- as.factor(owforums_sentimentbing$sentimentscore < 0)
 table(owforums_sentimentbing$negative)
 
+
 #collapse the duplicated columns by text_topic
-owsentiment <- owsentiment[!duplicated(owsentiment$forum_text),]
+owforums_sentimentbing <- owforums_sentimentbing[!duplicated(owforums_sentimentbing$text_topic),]
 
 #create a new df without all of the unnecessary data
 owsentiment <- data.frame(owforums_sentimentbing$text_topic, owforums_sentimentbing$sentimentscore, owforums_sentimentbing$negative)
 names(owsentiment) <- c("forum_text","sentiment_score","negative")
 
+#testcode
+write.csv(owsentiment, file="forumssentiment.csv")
 
 #Create a corpus and remove unnecessary words/text
 #Corpus is necessary to do predictive analytics
