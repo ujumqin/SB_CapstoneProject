@@ -64,7 +64,7 @@ write.csv(owsentiment, file="forumssentiment.csv")
 #Create a corpus and remove unnecessary words/text
 #Corpus is necessary to do predictive analytics
 owcorpus <- Corpus(VectorSource(owsentiment$forum_text))
-inspect(owcorpus[[100]])
+
 owcorpus <- tm_map(owcorpus, removePunctuation)
 owcorpus <- tm_map(owcorpus, tolower)
 owcorpus <- tm_map(owcorpus, removeWords, c("mercy", "bastion", stopwords("english")))
@@ -106,7 +106,7 @@ cartGrid <- expand.grid(.cp=(1:50)*0.00001)
 train(negative ~., data=trainow, method="rpart", trControl=fitOWControl, tuneGrid=cartGrid)
 
 #second model created using recommended cp value
-forumCART2 <- rpart(negative ~., data=trainow, method="class",control=rpart.control(cp=0.0025))
+forumCART2 <- rpart(negative ~., data=trainow, method="class",control=rpart.control(cp=0.00043))
 prp(forumCART2, fallen.leaves = FALSE, tweak = 1.0, compress = TRUE, ycompress = TRUE, box.palette = "auto")
 
 
@@ -124,6 +124,15 @@ forumRF <- randomForest(negative ~., data = trainow)
 predictRF <- predict(forumRF, newdata = testow)
 
 table(testow$negative, predictRF)
+
+#testing model against manually created test data.
+
+manualdata <- read.csv(file = "OWFORUMS_manualcheck_12_29.csv")
+str(testow)
+str(manualdata)
+predictForumCart2 <- predict(forumCART2, newdata = manualdata, type = "class")
+table(testow$negative, predictForumCart2)
+(339+85)/(339+45+130+85)
 
 #using this data, we can predict whether a Overwatch forum post will be negative or positive. This can be useful in the automatic moderation of a forum post.
 #This model is falliable since we are relying on the bing lexicon to determine whether language is positive or negative.
