@@ -30,7 +30,7 @@ write.csv(df_tweets_OW, file = "OWT_12-22.csv")
 
 ```
 
-### Tweets scraped
+### Tweets scraped (Tables do not show in github! Open this code in Rstudio as Rmarkdown to see tables)
 ``` {r kable, result = 'asis' , echo=FALSE, eval=TRUE, warning=FALSE}
 library(knitr)
 library(RCurl)
@@ -146,7 +146,7 @@ while(n <= length(links)) {
 write.csv(owreddit.total, file = "reddit_comments.csv")
 ```
 
-### Overwatch subreddit scraped
+### Overwatch subreddit scraped  (Tables do not show in github! Open this code in Rstudio as Rmarkdown to see tables)
 ``` {r echo=FALSE, eval=TRUE, warning=FALSE}
 library(knitr)
 #code to load in table to Rmarkdown
@@ -291,7 +291,7 @@ newow.total_clean <- ow.total[!duplicated(ow.total[4]),]
 write.csv(newow.total_clean, 'OWFORUMS_manualcheck_12_30.csv')
 ```
 
-### Table for Overwatch Forum Data
+### Table for Overwatch Forum Data  (Tables do not show in github! Open this code in Rstudio as Rmarkdown to see tables)
 ``` {r, eval=TRUE, warning=FALSE}
 library(knitr)
 library(bitops)
