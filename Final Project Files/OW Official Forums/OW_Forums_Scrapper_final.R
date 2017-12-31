@@ -7,7 +7,7 @@ library(curl)
 
 
 #Read URL
-ow.forums <- read_html("https://us.battle.net/forums/en/overwatch/22813879/?page=6")
+ow.forums <- read_html("https://us.battle.net/forums/en/overwatch/22813879/")
 
 #scrapes links from read URL
 links <- ow.forums %>% html_nodes("a") %>% html_attr("href")
@@ -35,8 +35,6 @@ full_links <- paste(front_url,links$links, sep = "")
 #remove duplicate full_links
 clean_links <- unique(full_links)
 
-#write links to file 
-write.csv(clean_links, file="clean_links.csv")
 
 #new df ow.total
 ow.total <- data.frame("link", "title", "time", "text", stringsAsFactors = FALSE)
@@ -113,18 +111,8 @@ for(i in 1:length(ow.total$X.text.)) {
 #remove duplicate values
 str(ow.total)
 newow.total_clean <- ow.total[!duplicated(ow.total[4]),]
+
 #write the file
-write.csv(newow.total_clean, 'OWFORUMS_page6_12_22.csv')
-
-owcsv <- read.csv('OWFORUMS_12_22.csv')
-
-str(owcsv)
-owcsv_clean <- owcsv[!duplicated(owcsv),]
-write.csv(owcsv_clean, 'OWFORUMS12_22_FINAL.csv')
-
-
-
-
-
+write.csv(newow.total_clean, 'OWFORUMS_manualcheck_12_30.csv')
 
 

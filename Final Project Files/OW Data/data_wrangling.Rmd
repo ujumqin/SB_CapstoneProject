@@ -2,11 +2,15 @@
 title: "Data Wrangling"
 author: "Sine Gov"
 date: "December 30, 2017"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+options(knitr.table.format = 'markdown')
 ```
 
 ## Data Sources
@@ -38,6 +42,7 @@ twittertable <- read.csv(file="twitter_example.csv")
 
 #code to display table
 kable(twittertable[1:5,])
+
 
 ```
 

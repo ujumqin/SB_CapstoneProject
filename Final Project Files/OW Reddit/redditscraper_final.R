@@ -1,10 +1,9 @@
 library(rvest)
-#library(stringr)
 library(tidyr)
 library(RCurl)
 library(dplyr)
 library(curl)
-library(rebus)
+
 
 #Read URL
 ow.forums <- read_html("https://www.reddit.com/r/Overwatch/")
@@ -29,13 +28,6 @@ links <- cbind(links, keep)
 links <- links[links$keep == "TRUE",]
 links <- paste(links$links)
 
-print(links)
-
-
-#write comment links to file
-write.csv(links, file="redditcommentslink.csv")
-
-
 #new df ow.total
 owreddit.total <- data.frame("link", "title", "time", "text", "user", stringsAsFactors = FALSE)
 print(owreddit.total)
@@ -57,7 +49,6 @@ while(n <= length(links)) {
   comments <- gsub("<.*?>", "", comments)
   
   #script going too fast and wasn't cleaning
-  Sys.sleep(1)
   comments <- gsub("\n", "", comments)
   
   
