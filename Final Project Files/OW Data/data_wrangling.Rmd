@@ -36,9 +36,10 @@ write.csv(df_tweets_OW, file = "OWT_12-22.csv")
 ### Tweets scraped
 ``` {r echo=FALSE, eval=TRUE, warning=FALSE}
 library(knitr)
+library(RCurl)
 #code to load in table to Rmarkdown
-twittertable <- read.csv(file="twitter_example.csv")
-
+twittertable <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/twitter_example.csv"))
+  
 #code to display table
 kable(twittertable[1:5,], format = "markdown")
 
@@ -152,7 +153,7 @@ write.csv(owreddit.total, file = "reddit_comments.csv")
 ``` {r echo=FALSE, eval=TRUE, warning=FALSE}
 library(knitr)
 #code to load in table to Rmarkdown
-reddittable <- read.csv(file="reddit_example.csv")
+reddittable <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/reddit_example.csv"))
 
 #code to display table
 kable(reddittable[2:6, 2:6])
@@ -297,7 +298,7 @@ write.csv(newow.total_clean, 'OWFORUMS_manualcheck_12_30.csv')
 ``` {r echo=FALSE, eval=TRUE, warning=FALSE}
 library(knitr)
 #code to load in table to Rmarkdown
-owforumtable <- read.csv(file="owforum_example.csv")
+owforumtable <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/owforum_example.csv"))
 
 #code to display table
 kable(owforumtable[6:10,])
