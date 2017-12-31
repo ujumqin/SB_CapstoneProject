@@ -1,21 +1,19 @@
 library(dplyr)
 library(tidytext)
-library(tm)
 library(ggplot2)
 library(wordcloud)
 library(reshape2)
+library(RCurl)
 
 #read owforums data into R. Ensure they are not factors
-reddit <- read.csv("reddit12_22.csv", stringsAsFactors = FALSE)
-twitter <- read.csv("OWT_12-22.csv", stringsAsFactors = FALSE)
-forums <- read.csv("OWFORUMS12_22_FINAL.csv", stringsAsFactors = FALSE)
+reddit <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/reddit12_22.csv"), stringsAsFactors = FALSE)
+#reddit <- read.csv("reddit12_22.csv", stringsAsFactors = FALSE)
+twitter <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWT_12-22.csv"), stringsAsFactors = FALSE)
+#twitter <- read.csv("OWT_12-22.csv", stringsAsFactors = FALSE)
+forums <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWFORUMS12_22_FINAL.csv"), stringsAsFactors = FALSE)
+#forums <- read.csv("OWFORUMS12_22_FINAL.csv", stringsAsFactors = FALSE)
 
-#test code, delete later
-str(reddit)
-str(twitter)
-str(forums)
-
-#duplicating the text column so we have a copy of the text. this text is destroyed during tokenization
+#duplicating the text column so we have a copy of the text. this text is used to group
 reddit$text_topic <- reddit$X.text.
 twitter$text_topic <- twitter$text
 forums$text_topic <- forums$text
@@ -197,5 +195,3 @@ tidy_twitter %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
   comparison.cloud(colors = c("gray20", "gray80"),
                    max.words = 80)
-
-

@@ -1,0 +1,149 @@
+---
+title: "Exploratory Stastics"
+author: "Sine Gov"
+date: "December 31, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Introduction
+The text data from Twitter, Reddit, and the Official Overwatch forums will be run through three different sentiment analyzers: bing, nrc, and afinn. The results will be plotted to see if any interesting trends or results appear.
+
+
+## Preparation of Data
+The text data needs to be loaded in and tokenized. To analyze and plot the data, the libraries below were used.
+dplyr
+tidytext
+ggplot2
+wordcloud
+reshape2
+RCurl
+
+```{r, eval=TRUE, warning=FALSE, echo=FALSE}
+library(dplyr)
+library(tidytext)
+library(ggplot2)
+library(wordcloud)
+library(reshape2)
+library(RCurl)
+
+#read owforums data into R. Ensure they are not factors
+reddit <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/reddit12_22.csv"), stringsAsFactors = FALSE)
+twitter <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWT_12-22.csv"), stringsAsFactors = FALSE)
+forums <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWFORUMS12_22_FINAL.csv"), stringsAsFactors = FALSE)
+
+
+#duplicating the text column so we have a copy of the text. this text is used to group
+reddit$text_topic <- reddit$X.text.
+twitter$text_topic <- twitter$text
+forums$text_topic <- forums$text
+
+#-------------------------Tokenize Text-------------------------
+#tokenize the text column for reddit
+tidy_reddit <- reddit %>%
+  group_by(text_topic) %>%
+  mutate(linenumber = row_number()) %>%
+  unnest_tokens(word, X.text.) %>%
+  ungroup()
+
+#tokenize the text column for twitter
+tidy_twitter <- twitter %>%
+  group_by(text_topic) %>%
+  mutate(linenumber = row_number()) %>%
+  unnest_tokens(word, text) %>%
+  ungroup()
+
+#tokenize the text column for forums
+tidy_forums <- forums %>%
+  group_by(X.) %>%
+  mutate(linenumber = row_number()) %>%
+  unnest_tokens(word, text) %>%
+  ungroup()
+```
+
+## Sentiment Analysis 
+You code below was used to analyze the data. Each site was analyzed separately.
+
+```{r pressure, eval=TRUE, warning=FALSE, error=FALSE}
+#-------------------------Bing Sentiment-------------------------
+reddit_bing <- tidy_reddit %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup()
+
+twitter_bing <- tidy_twitter %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup()
+
+forum_bing <- tidy_forums %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  ungroup()
+
+#-------------------------nrc Sentiment-------------------------
+reddit_nrc <- tidy_reddit %>%
+  inner_join(get_sentiments("nrc"))
+
+twitter_nrc <- tidy_twitter %>%
+  inner_join(get_sentiments("nrc"))
+
+forum_nrc <- tidy_forums %>%
+  inner_join(get_sentiments("nrc"))
+
+#-------------------------afinn Sentiment-------------------------
+reddit_afinn <- tidy_reddit %>%
+  inner_join(get_sentiments("afinn"))
+
+twitter_afinn <- tidy_twitter %>%
+  inner_join(get_sentiments("afinn"))
+
+forum_afinn <- tidy_forums %>%
+  inner_join(get_sentiments("afinn"))
+```
+
+## Plotting the Data
+After sentiment was gathered for each site, ggplot was used to plot the results.
+
+```{r, eval=TRUE, warning=FALSE, echo=FALSE}
+
+#-------------------------Plotting Data (Bing)-------------------------
+reddit_bing %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(y = "Reddit Most Used Sentiment Words",
+       x = NULL) +
+  coord_flip()
+
+twitter_bing %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(y = "Twitter Most Used Sentiment Words",
+       x = NULL) +
+  coord_flip()
+
+forum_bing %>%
+  group_by(sentiment) %>%
+  top_n(10) %>%
+  ungroup() %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(y = "Overwatch Forums Most Used Sentiment Words",
+       x = NULL) +
+  coord_flip()
+
+

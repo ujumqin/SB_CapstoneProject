@@ -2,7 +2,7 @@
 title: "Data Wrangling"
 author: "Sine Gov"
 date: "December 30, 2017"
-output:
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
