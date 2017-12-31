@@ -41,7 +41,7 @@ library(RCurl)
 twittertable <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/twitter_example.csv"))
   
 #code to display table
-print_twitter_table <- kable(twittertable[1:5,], format = "markdown")
+kable(twittertable[1:5,], format = "markdown")
 
 
 ```
