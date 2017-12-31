@@ -34,7 +34,7 @@ write.csv(df_tweets_OW, file = "OWT_12-22.csv")
 ```
 
 ### Tweets scraped
-``` {r echo=FALSE, eval=TRUE, warning=FALSE}
+``` {r kable, result = 'asis' , echo=FALSE, eval=TRUE, warning=FALSE}
 library(knitr)
 library(RCurl)
 #code to load in table to Rmarkdown

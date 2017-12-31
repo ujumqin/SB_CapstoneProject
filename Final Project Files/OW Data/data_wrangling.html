@@ -573,6 +573,7 @@ write.csv(newow.total_clean, 'OWFORUMS_manualcheck_12_30.csv')</code></pre>
 <div id="table-for-overwatch-forum-data" class="section level3">
 <h3>Table for Overwatch Forum Data</h3>
 <pre class="r"><code>library(knitr)
+library(bitops)
 #code to load in table to Rmarkdown
 owforumtable &lt;- read.csv(text=getURL(&quot;https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/owforum_example.csv&quot;))
 
