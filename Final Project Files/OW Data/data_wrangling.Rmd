@@ -43,7 +43,6 @@ twittertable <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/
 #code to display table
 print_twitter_table <- kable(twittertable[1:5,], format = "markdown")
 
-print_twitter_table
 
 ```
 
