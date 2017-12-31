@@ -1,9 +1,7 @@
 library(dplyr)
 library(tidytext)
 library(tm)
-library(SnowballC)
 library(ggplot2)
-library(caTools)
 library(wordcloud)
 library(reshape2)
 
@@ -11,8 +9,6 @@ library(reshape2)
 reddit <- read.csv("reddit12_22.csv", stringsAsFactors = FALSE)
 twitter <- read.csv("OWT_12-22.csv", stringsAsFactors = FALSE)
 forums <- read.csv("OWFORUMS12_22_FINAL.csv", stringsAsFactors = FALSE)
-
-all <- c('reddit','twitter','forums')
 
 #test code, delete later
 str(reddit)
@@ -144,21 +140,24 @@ ggplot(twitter_afinn, aes(x=score)) +
   labs(x="afinn score") +
   xlab("afinn score")+
   coord_cartesian(ylim = c(0,7000), expand = TRUE) +
-  ggtitle("twitter")
+  ggtitle("twitter") +
+  scale_x_continuous(breaks = -5:5) 
 
 ggplot(forum_afinn, aes(x=score)) +
   geom_bar(aes(y=..count.., fill=..count..)) + 
   labs(x="afinn score") +
   xlab("afinn score")+
   coord_cartesian(ylim = c(0,7000), expand = TRUE)+
-  ggtitle("Overwatch Forums")
+  ggtitle("Overwatch Forums") +
+  scale_x_continuous(breaks = -5:5) 
 
 ggplot(reddit_afinn, aes(x=score)) +
   geom_bar(aes(y=..count.., fill=..count..)) + 
   labs(x="afinn score") +
   xlab("afinn score")  +
   coord_cartesian(ylim = c(0,7000), expand = TRUE)+
-  ggtitle("Reddit")
+  ggtitle("Reddit") +
+  scale_x_continuous(breaks = -5:5) 
 
 #-------------------------Word Clouds-------------------------
 
@@ -177,25 +176,26 @@ tidy_twitter %>%
   count(word) %>%
   with(wordcloud(word, n, max.words = 50))
 
+#-------------------------Word Clouds (negative vs positive)-------------------------
 tidy_forums %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
   comparison.cloud(colors = c("gray20", "gray80"),
-                   max.words = 100)
+                   max.words = 80)
 
  tidy_reddit %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
   comparison.cloud(colors = c("gray20", "gray80"),
-                   max.words = 100)
+                   max.words = 80)
 
 tidy_twitter %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
   comparison.cloud(colors = c("gray20", "gray80"),
-                   max.words = 100)
+                   max.words = 80)
 
 
