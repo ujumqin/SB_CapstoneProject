@@ -3,9 +3,6 @@ title: "Data Wrangling"
 author: "Sine Gov"
 date: "December 30, 2017"
 output:
-  html_document: default
-  pdf_document: default
-  word_document: default
 ---
 
 ```{r setup, include=FALSE}
