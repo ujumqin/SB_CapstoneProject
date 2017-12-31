@@ -10,7 +10,6 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-options(knitr.table.format = 'markdown')
 ```
 
 ## Data Sources
@@ -41,7 +40,7 @@ library(knitr)
 twittertable <- read.csv(file="twitter_example.csv")
 
 #code to display table
-kable(twittertable[1:5,])
+kable(twittertable[1:5,], format = "markdown")
 
 
 ```
