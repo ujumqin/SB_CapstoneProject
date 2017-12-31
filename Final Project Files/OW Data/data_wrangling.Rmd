@@ -295,8 +295,9 @@ write.csv(newow.total_clean, 'OWFORUMS_manualcheck_12_30.csv')
 ```
 
 ### Table for Overwatch Forum Data
-``` {r echo=FALSE, eval=TRUE, warning=FALSE}
+``` {r, eval=TRUE, warning=FALSE}
 library(knitr)
+library(bitops)
 #code to load in table to Rmarkdown
 owforumtable <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/owforum_example.csv"))
 
