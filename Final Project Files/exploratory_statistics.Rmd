@@ -9,19 +9,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ## Introduction
-The text data from Twitter, Reddit, and the Official Overwatch forums will be run through three different sentiment analyzers: bing, nrc, and afinn. The results will be plotted to see if any interesting trends or results appear.
+After collecting text data from Twitter, Reddit, and the Official Overwatch forums, I ran the text through three different sentiment lexicons: bing, nrc, and afinn. The results will be plotted to see if any interesting trends or results appear.
 
 
-## Preparation of Data
-The text data needs to be loaded in and tokenized. To analyze and plot the data, the libraries below were used.
-dplyr
-tidytext
-ggplot2
-wordcloud
-reshape2
-RCurl
-
-```{r, eval=TRUE, warning=FALSE, echo=FALSE}
+```{r, eval=TRUE, warning=FALSE, echo=FALSE, message=FALSE}
 library(dplyr)
 library(tidytext)
 library(ggplot2)
@@ -63,10 +54,8 @@ tidy_forums <- forums %>%
   ungroup()
 ```
 
-## Sentiment Analysis 
-You code below was used to analyze the data. Each site was analyzed separately.
 
-```{r pressure, eval=TRUE, warning=FALSE, error=FALSE}
+```{r pressure, eval=TRUE, warning=FALSE, echo=FALSE, message=FALSE, error=FALSE}
 #-------------------------Bing Sentiment-------------------------
 reddit_bing <- tidy_reddit %>%
   inner_join(get_sentiments("bing")) %>%
@@ -104,10 +93,14 @@ forum_afinn <- tidy_forums %>%
   inner_join(get_sentiments("afinn"))
 ```
 
-## Plotting the Data
-After sentiment was gathered for each site, ggplot was used to plot the results.
+## Most Used Positive & Negative Words by Community
+From these plots, we can see the common negative and positive words used by the different communities. There are some interesting findings in these graphs. 
 
-```{r, eval=TRUE, warning=FALSE, echo=FALSE}
+The first being the word "mercy." Mercy is a character in Overwatch who has recently went over some changes in her abilities. Mercy being classified as positive isn't necessarily accurate, however from this we could do additional research on what the community is saying about this character since it shows up in all three communities' positive words.
+
+Another interesting finding is the top negative word from the reddit community, "loot." Loot in Overwatch may refer to the loot boxes that can be earned or bought and contain cosmetic items for the characters. Like "mercy", "loot" does not necessarily have a negative connotation.    
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE}
 
 #-------------------------Plotting Data (Bing)-------------------------
 reddit_bing %>%
@@ -146,4 +139,143 @@ forum_bing %>%
        x = NULL) +
   coord_flip()
 
+```
 
+## Sentiment Words Used by Each Community
+From these charts, we can see that the communities are using mostly positive words, however there is a significant amount of negativity with all of these communities. The Overwatch forums seems to be communicating the most anger and fear. Combined with what we saw earlier, it may be that the two are related; people may be communicating negative sentiments towards Mercy. We would have to investigate this further in order to understand what the negativity is directed towards.  
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE}
+
+#-------------------------nrc Sentiment-------------------------
+reddit_nrc <- tidy_reddit %>%
+  inner_join(get_sentiments("nrc"))
+
+twitter_nrc <- tidy_twitter %>%
+  inner_join(get_sentiments("nrc"))
+
+forum_nrc <- tidy_forums %>%
+  inner_join(get_sentiments("nrc"))
+
+#-------------------------Plotting Data (nrc)-------------------------
+ggplot(reddit_nrc, aes(x=sentiment)) +
+  geom_bar(aes(y=..count.., fill =..count..)) +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1, vjust = 1)) +
+  ggtitle("reddit") +
+  coord_cartesian(ylim = c(0,11000), expand = TRUE)
+
+ggplot(twitter_nrc, aes(x=sentiment)) +
+  geom_bar(aes(y=..count.., fill =..count..)) +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1, vjust = 1)) +
+  ggtitle("Twitter") +
+  coord_cartesian(ylim = c(0,11000), expand = TRUE)
+
+ggplot(forum_nrc, aes(x=sentiment)) +
+  geom_bar(aes(y=..count.., fill =..count..)) +
+  theme(axis.text.x = element_text(size = 10, angle = 45, hjust = 1, vjust = 1)) +
+  ggtitle("Overwatch Forums") +
+  coord_cartesian(ylim = c(0,11000), expand = TRUE)
+```
+
+## Distribution of Negativity Among the Three Communities
+From these plots, we get a better idea of the degrees of positivity and negativity. We see that positivity is high for all communities,  but in the Overwatch Forums and reddit communities, the negative sentiments (negative scores) are still rather proportionally high. These may be communities we should be investigating to better understand the negative sentiment and we can investigate twitter to understand the positive sentiment. 
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE}
+#-------------------------afinn Sentiment-------------------------
+reddit_afinn <- tidy_reddit %>%
+  inner_join(get_sentiments("afinn"))
+
+twitter_afinn <- tidy_twitter %>%
+  inner_join(get_sentiments("afinn"))
+
+forum_afinn <- tidy_forums %>%
+  inner_join(get_sentiments("afinn"))
+
+#-------------------------Plotting data (Afinn)-------------------------
+ggplot(twitter_afinn, aes(x=score)) +
+  geom_bar(aes(y=..count.., fill=..count..)) + 
+  labs(x="afinn score") +
+  xlab("afinn score")+
+  #coord_cartesian(ylim = c(0,7000), expand = TRUE) +
+  ggtitle("twitter") +
+  scale_x_continuous(breaks = -5:5) 
+
+ggplot(forum_afinn, aes(x=score)) +
+  geom_bar(aes(y=..count.., fill=..count..)) + 
+  labs(x="afinn score") +
+  xlab("afinn score")+
+  #coord_cartesian(ylim = c(0,7000), expand = TRUE)+
+  ggtitle("Overwatch Forums") +
+  scale_x_continuous(breaks = -5:5) 
+
+ggplot(reddit_afinn, aes(x=score)) +
+  geom_bar(aes(y=..count.., fill=..count..)) + 
+  labs(x="afinn score") +
+  xlab("afinn score")  +
+  #coord_cartesian(ylim = c(0,7000), expand = TRUE)+
+  ggtitle("Reddit") +
+  scale_x_continuous(breaks = -5:5) 
+```
+
+## Word clouds
+These word clouds below can show us which words are being used the most by each communitiy.
+
+### Overwatch Forums
+From the Overwatch Forums, we can see that many of the Heroes in Overwatch (Junkrat, Mercy, Genji, Mei, & Sombra) are showing up in the word cloud. Additionally, we seeing words that associate with the mechanics of the game: healing, ability, kill, team, nerf, and so forth. The second word cloud shows us which negative and positive words are being used the most. We can see here, Mercy shows up rather prominently again. Given the sentiments we saw earlier, it is possible that Mercy may be the center of negativity or positivity. Separately we also see damage show up in the negative which could be a cue for us to look at the balance for the game.
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE}
+
+#-------------------------Word Clouds-------------------------
+
+tidy_forums %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 50))
+
+tidy_forums %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("gray20", "gray80"),
+                   max.words = 80)
+
+```
+
+### Reddit
+From Reddit, we can see that team, game, people, and play shows up prominently. This could be a cue in that the mechanics that led to people working as a team in game are being discussed. In this word cloud, different Heroes show up (Orisa, Winston, Doomfist, and so forth). This may mean that the community is talking about the role these Hereos may have in the team. From the second word cloud, we see again that Mercy is prominent, but not as prominent as the word cloud for the Overwatch forums.  We are also starting to see a trend in that the words: like, damage, and kill are showing up. As mentioned earlier, this may have to do with discussions of the mechanics of the game.
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE}
+tidy_reddit %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 50))
+
+ tidy_reddit %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("gray20", "gray80"),
+                   max.words = 80)
+```
+
+### Twitter
+From the Twitter word cloud, we see a lot of html code (http and t.co). This tells us that tweets are probably mostly comprised of links. This also tells us that the Twitter data may not be as useful for understanding what are communities are concerned with. Looking at the second word cloud, we can see Mercy shows up prominently again, but given that we have lots of html links in the tweets, it may not mean anything significant. 
+
+```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE}
+tidy_twitter %>%
+  anti_join(stop_words) %>%
+  count(word) %>%
+  with(wordcloud(word, n, max.words = 50))
+
+tidy_twitter %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("gray20", "gray80"),
+                   max.words = 80)
+```
+
+
+## Conclusion
+With this exploration of data, we get a high level overview of the Overwatch community's sentiment. It seems that negative sentiment may be a concern; the plots seem to show a relatively high amount of negativity. With this much happening outside of the game, it is very likely happening in games as well. The data taken is a snapshot of one day, so it would be interesting to see how this sentiment changes over time.
+
+For now, since it seems that we may have a negativity problem, it will become important and useful to build an algorithm that can detect negativity. This could be useful for managing in game chat and addressing the toxic behavior that may appear in game.  
