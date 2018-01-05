@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ## Introduction
-After collecting text data from Twitter, Reddit, and the Official Overwatch forums, I ran the text through three different sentiment lexicons: bing, nrc, and afinn. The results will be plotted to see if any interesting trends or results appear.
+After collecting text data from Twitter, Reddit, and the Official Overwatch forums, The text was analyzed using three sentiment lexicons: bing, nrc, and afinn. The results are plotted below.
 
 
 ```{r, eval=TRUE, warning=FALSE, echo=FALSE, message=FALSE}
@@ -94,11 +94,13 @@ forum_afinn <- tidy_forums %>%
 ```
 
 ## Most Used Positive & Negative Words by Community
-From these plots, we can see the common negative and positive words used by the different communities. There are some interesting findings in these graphs. 
+These plots show the common negative and positive words used by the different communities. There are two interesting findings in these graphs. 
 
-The first being the word "mercy." Mercy is a character in Overwatch who has recently went over some changes in her abilities. Mercy being classified as positive isn't necessarily accurate, however from this we could do additional research on what the community is saying about this character since it shows up in all three communities' positive words.
+The first being the word "mercy." Mercy is a character in Overwatch who has recently went over some changes in her abilities. Mercy being classified as positive isn't necessarily accurate, sine it is the name of a character. 
 
-Another interesting finding is the top negative word from the reddit community, "loot." Loot in Overwatch may refer to the loot boxes that can be earned or bought and contain cosmetic items for the characters. Like "mercy", "loot" does not necessarily have a negative connotation.    
+Another interesting finding is the top negative word from the reddit community, "loot." Loot in Overwatch may refer to the loot boxes that can be earned or bought and contain cosmetic items for the characters. Like "mercy", "loot" does not necessarily have a negative connotation.      
+
+From this we can do additional research on what the community is saying about these two terms.
 
 ```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE}
 
@@ -142,7 +144,9 @@ forum_bing %>%
 ```
 
 ## Sentiment Words Used by Each Community
-From these charts, we can see that the communities are using mostly positive words, however there is a significant amount of negativity with all of these communities. The Overwatch forums seems to be communicating the most anger and fear. Combined with what we saw earlier, it may be that the two are related; people may be communicating negative sentiments towards Mercy. We would have to investigate this further in order to understand what the negativity is directed towards.  
+The charts below show us the type of sentiments used in the language. 
+
+From these charts, we can see that the communities are using mostly positive words, however there is a significant amount of negativity with all of these communities. The Overwatch forums seems to be communicating the most anger and fear. Combined with what we saw earlier, it may be that the two are related; people may be communicating negative sentiments towards Mercy. It is possible that there is some sentiment towards loot boxes. We may be able to understand by investigating further.  
 
 ```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE}
 
@@ -177,7 +181,9 @@ ggplot(forum_nrc, aes(x=sentiment)) +
 ```
 
 ## Distribution of Negativity Among the Three Communities
-From these plots, we get a better idea of the degrees of positivity and negativity. We see that positivity is high for all communities,  but in the Overwatch Forums and reddit communities, the negative sentiments (negative scores) are still rather proportionally high. These may be communities we should be investigating to better understand the negative sentiment and we can investigate twitter to understand the positive sentiment. 
+From these plots, we get a better idea of the degrees of positivity and negativity.
+
+We see that positivity is high for all communities,  but in the Overwatch Forums and reddit communities, the negative sentiments (negative scores) are still rather proportionally high. These may be communities we should be investigating to better understand the negative sentiment and we can investigate twitter to understand the positive sentiment. 
 
 ```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE}
 #-------------------------afinn Sentiment-------------------------
@@ -217,7 +223,7 @@ ggplot(reddit_afinn, aes(x=score)) +
 ```
 
 ## Word clouds
-These word clouds below can show us which words are being used the most by each communitiy.
+These word clouds below can show us which words are being used the most by each communitiy despite sentiment.
 
 ### Overwatch Forums
 From the Overwatch Forums, we can see that many of the Heroes in Overwatch (Junkrat, Mercy, Genji, Mei, & Sombra) are showing up in the word cloud. Additionally, we seeing words that associate with the mechanics of the game: healing, ability, kill, team, nerf, and so forth. The second word cloud shows us which negative and positive words are being used the most. We can see here, Mercy shows up rather prominently again. Given the sentiments we saw earlier, it is possible that Mercy may be the center of negativity or positivity. Separately we also see damage show up in the negative which could be a cue for us to look at the balance for the game.
@@ -241,7 +247,7 @@ tidy_forums %>%
 ```
 
 ### Reddit
-From Reddit, we can see that team, game, people, and play shows up prominently. This could be a cue in that the mechanics that led to people working as a team in game are being discussed. In this word cloud, different Heroes show up (Orisa, Winston, Doomfist, and so forth). This may mean that the community is talking about the role these Hereos may have in the team. From the second word cloud, we see again that Mercy is prominent, but not as prominent as the word cloud for the Overwatch forums.  We are also starting to see a trend in that the words: like, damage, and kill are showing up. As mentioned earlier, this may have to do with discussions of the mechanics of the game.
+From Reddit, we can see that team, game, people, and play shows up prominently. This could be a cue in that the mechanics that led to people working as a team in game are being discussed. In this word cloud, different Heroes show up (Orisa, Winston, Doomfist, and so forth). This may mean that the community is talking about the role these Hereos may have in the team. From the second word cloud, we see again that Mercy is prominent, but not as prominent as the word cloud for the Overwatch forums. We are also starting to see a trend in that the words: like, damage, and kill are showing up. As mentioned earlier, this may have to do with discussions of the mechanics of the game and may be a cue to examine this more closely as a development action item.
 
 ```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE}
 tidy_reddit %>%
