@@ -247,7 +247,7 @@ withouttwitter_bing %>%
 ```
 
 ## Sentiment Words Used by Each Community
-From these charts, we can see that the communities are using mostly positive words, however there is a significant amount of negative type of words that were used with all of these communities. Combined with what we saw earlier, it may be that the two are related; people may be communicating negative sentiments towards Mercy since her name is the second most used word by both communities. 
+Two plots are shown below; the first with each sentiment colored differenty and the second colored by positve or negative sentiment. From these plots, we can see that the communities are using mostly positive words, however there is a significant amount of negative type of words that were used with all of these communities. Combined with what we saw earlier, it may be that the two are related; people may be communicating negative sentiments towards Mercy since her name is the second most used word by both communities. 
 
 When we examine the sentiment words from reddit and the forums together, we see there is a significant amount of negative language, along with anger, disgust, fear, and sadness. This may mean that the community is unhappy with the state of the game. Additionally we see a great amount of anticipation, which means that the community may be looking forward to either changes or some release for the game or it may be due to the time of year, a week before Christmas, which is what the players may be looking forward to.
 
@@ -272,11 +272,33 @@ rn <- ggplot(reddit_nrc, aes(x="", fill=sentiment)) +
   xlab("Sentiment") +
   theme(axis.title.y=element_blank(),
         axis.text.y=element_blank(),
-        axis.ticks.y=element_blank())
+        axis.ticks.y=element_blank()) 
 
 
 
 cowplot::plot_grid(fn, rn)
+
+
+rnrc <- ggplot(reddit_nrc, aes(x="", fill=sentiment)) +
+  geom_bar(width = 1) +
+  ggtitle("reddit")  +
+  xlab("Sentiment") +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) +
+  scale_fill_manual("sentiment", values = c("anger" = "red", "anticipation" = "blue", "disgust" = "red",  "fear" = "red", "joy" = "blue", "negative" = "red", "positive" = "blue" , "sadness" = "red", "surprise" = "blue", "trust" = "blue"))
+
+fnrc <- ggplot(forum_nrc, aes(x="", fill=sentiment)) +
+  geom_bar(width = 1) +
+  ggtitle("Overwatch Forums")  +
+  xlab("Sentiment") +
+  theme(axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) + 
+  scale_fill_manual("sentiment", values = c("anger" = "red", "anticipation" = "blue", "disgust" = "red",  "fear" = "red", "joy" = "blue", "negative" = "red", "positive" = "blue" , "sadness" = "red", "surprise" = "blue", "trust" = "blue"))
+
+cowplot::plot_grid(fnrc, rnrc)
+
 
 ggplot(withouttwitter_nrc, aes(x="", fill=sentiment)) +
   geom_bar(width = 1) +
@@ -285,6 +307,7 @@ ggplot(withouttwitter_nrc, aes(x="", fill=sentiment)) +
   theme(axis.title.y=element_blank(),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank())
+
 
 ```
 
@@ -324,4 +347,4 @@ With this exploration of data, we get a high level overview of the Overwatch com
 
 The data taken is a snapshot of one day, so it would be interesting to see how this sentiment changes over time. Data taken directly after a patch would be idea and could help determine the sentiment of the community sooner. As a proof of concept, we can show how this method of data can help save time.
 
-Since it seems that there may be a negativity problem, it will become important and useful to build an algorithm that can detect negativity for use in game. Toxic behavior in game will eventually become a customer service issue and finding an automated way to manage in game will save time and money. 
+Since it seems that there may be a negativity problem, it will become important and useful to build an algorithm that can detect negativity for use in game. Toxic behavior in game will eventually become a customer service issue and finding an automated way to manage in game will save time and money. Additionally doing this will have a positive effect on the community since this bad behavior is being addressed and should reduce the behavior over the long term.   
