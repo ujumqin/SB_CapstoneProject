@@ -1,7 +1,7 @@
 ---
 title: "Exploratory Stastics"
 author: "Sine Gov"
-date: "January 4, 2017"
+date: "January 9, 2017"
 output:
   pdf_document: default
   html_document: default
@@ -10,6 +10,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 ## Introduction
 Overwatch is a team based First Person Shooter video game that is played online with other people. As a team, your goal is to secure objectives while fighting off the other team. Each person can select from 26 characters and each character falls into one of four roles; Offense, Defense, Tank, or Healing. The composition of the team factors to your success in the matches. During a match, you have the ability to chat and emote certain actions you would like to take in the game. 
 
@@ -21,8 +22,7 @@ Social media is a powerful tool that the developers of Overwatch can use. From s
 
 In order to review comments on social media it is often a manual process; someone needs to go through and read each comment and from that they can gain an understanding of the key issues the communitiy is discussing. This analysis attempts to automate this process to gather the major trends at a high level. Social media Text data has been collected from Twitter, Reddit, and the Official Overwatch forums. Below they are analyzed using three sentiment lexicons: bing, nrc, and afinn. The goal of this analysis is to determine whether we can see any trends in the data through this method.   
 
-
-```{r, eval=TRUE, warning=FALSE, echo=FALSE, message=FALSE}
+```{r pressure, eval=TRUE, warning=FALSE, echo=FALSE, message=FALSE, error=FALSE}
 library(dplyr)
 library(tidytext)
 library(ggplot2)
@@ -30,6 +30,7 @@ library(wordcloud)
 library(reshape2)
 library(RCurl)
 library(cowplot)
+library(RColorBrewer)
 
 #read owforums data into R. Ensure they are not factors
 reddit <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/reddit12_22.csv"), stringsAsFactors = FALSE)
@@ -72,10 +73,6 @@ tidy_notwitter <- withouttwitter %>%
   unnest_tokens(word, text) %>%
   ungroup()
 
-```
-
-
-```{r pressure, eval=TRUE, warning=FALSE, echo=FALSE, message=FALSE, error=FALSE}
 #-------------------------Bing Sentiment-------------------------
 reddit_bing <- tidy_reddit %>%
   inner_join(get_sentiments("bing")) %>%
@@ -129,6 +126,8 @@ withouttwitter_afinn <- tidy_notwitter %>%
 ## Word clouds
 The first thing done was to see which words, despite the sentiment, were being used most by the communities. We plotted the most commonly used words in a word cloud for each community.
 
+\newpage
+
 ### Overwatch Forums
 From the Overwatch Forums, we can see that many of the Heroes in Overwatch (Junkrat, Mercy, Genji, Mei, & Sombra) are showing up in the word cloud. Additionally, we see words that associate with the mechanics of the game: healing, ability, kill, team, nerf, and so forth. We know we are on the right track since a lot of these words are associated with the Overwatch game. 
 
@@ -136,21 +135,24 @@ The second word cloud shows us which negative and positive words are being used 
 
 ```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE, fig.width=3, fig.height=3}
 #-------------------------Word Clouds-------------------------
+pal <- brewer.pal(8,"Dark2")
 
 fwc <- tidy_forums %>%
   anti_join(stop_words) %>%
   count(word) %>%
-  with(wordcloud(word, n, max.words = 50))
+  with(wordcloud(word, n, max.words = 50, colors = pal))
 
 fpc <- tidy_forums %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
-  comparison.cloud(colors = c("gray20", "gray80"),
+  comparison.cloud(colors = c("deepskyblue1", "dodgerblue4"),
                    max.words = 80)
 
 cowplot::plot_grid(fwc, fpc, align = 'h')
 ```
+
+\newpage
 
 ### Reddit
 From Reddit, we have similiar words appear in a word cloud, but now we are seeing different characters (Orisa, Winston, Doomfist, and so forth) show up. This could indicate that this community is interested in these characters somehow. This data could be used to make decisions (balance changes) around them depending on the conversations being had about them. Additionally we see the word skin which combined with the other characters being discussed, may mean that the players are speaking on the different skins they may be using or have.
@@ -158,40 +160,47 @@ From Reddit, we have similiar words appear in a word cloud, but now we are seein
 From the polarity word cloud, we see again that Mercy is prominent, but not as prominent as the word cloud for the Overwatch forums. We are also starting to see a repeating words: like, damage, and kill are showing up. It seems that the different avenues of discussion are leading to some of the same conclusions.
 
 ```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE, fig.width=3, fig.height=3}
+pal <- brewer.pal(8,"Dark2")
+
 rwc <- tidy_reddit %>%
   anti_join(stop_words) %>%
   count(word) %>%
-  with(wordcloud(word, n, max.words = 50))
+  with(wordcloud(word, n, max.words = 50, colors = pal))
 
 rpc <- tidy_reddit %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
-  comparison.cloud(colors = c("gray20", "gray80"),
+  comparison.cloud(colors = c("deepskyblue1", "dodgerblue4"),
                    max.words = 80)
 
 cowplot::plot_grid(rwc, rpc, align = 'h')
 ```
 
+\newpage
+
 ### Twitter
 From the Twitter word cloud, we see a lot of html code (http and t.co) and terms related to streaming (twitch, stream, tonight, live, watch). This tells us that tweets are probably mostly comprised of links which tells us that the Twitter data may not be as useful for understanding what are communities are concerned with. Because of this, Twitter Data will not be analyzed in detail for the reminder of this report.
 
 ```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE, fig.width=3, fig.height=3}
+pal <- brewer.pal(8,"Dark2")
+
 twc <- tidy_twitter %>%
   anti_join(stop_words) %>%
   count(word) %>%
-  with(wordcloud(word, n, max.words = 50))
+  with(wordcloud(word, n, max.words = 50, colors = pal))
 
 tpc <- tidy_twitter %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
-  comparison.cloud(colors = c("gray20", "gray80"),
+  comparison.cloud(colors = c("deepskyblue1", "dodgerblue4"),
                    max.words = 80)
 
 cowplot::plot_grid(twc, tpc, align = 'h')
 ```
 
+\newpage
 
 ## Most Used Positive & Negative Words by Community
 These plots show the common negative and positive words used by the different communities. There are two interesting findings in these graphs. 
@@ -199,7 +208,6 @@ These plots show the common negative and positive words used by the different co
 The first being the word Mercy. Mercy shows up in both communities which shows that there is much discussion around her character. Recently there was a significant change to Mercy's abiliities which may be triggering the reason for Mercy being promiment. Additionally, it may be that her character is popular and people enjoy discussing her. 
 
 When we combine both the forums and the reddit data, the graph looks about the same as the other two, which further confirms the idea that these communities are saying similiar things. 
-
 
 ```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE}
 
@@ -233,6 +241,8 @@ rb <- reddit_bing %>%
   coord_flip()
 
 cowplot::plot_grid(fb, rb)
+```
+```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE, fig.align="center"}
 
 withouttwitter_bing %>%
   group_by(sentiment) %>%
@@ -242,11 +252,13 @@ withouttwitter_bing %>%
   ggplot(aes(word, n, fill = sentiment)) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~sentiment, scales = "free_y") +
-  labs(y = "Most Used Sentiment Words By Overwatch Community",
+  labs(y = "Overwatch Community",
        x = NULL) +
   coord_flip()
 
 ```
+
+\newpage
 
 ## Sentiment Words Used by Each Community
 Two plots are shown below; the first with each sentiment colored differenty and the second colored by positve or negative sentiment. From these plots, we can see that the communities are using mostly positive words, however there is a significant amount of negative type of words that were used with all of these communities. Combined with what we saw earlier, it may be that the two are related; people may be communicating negative sentiments towards Mercy since her name is the second most used word by both communities. 
@@ -276,8 +288,6 @@ rn <- ggplot(reddit_nrc, aes(x="", fill=sentiment)) +
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank()) 
 
-
-
 cowplot::plot_grid(fn, rn)
 
 
@@ -288,7 +298,7 @@ rnrc <- ggplot(reddit_nrc, aes(x="", fill=sentiment)) +
   theme(axis.title.y=element_blank(),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank()) +
-  scale_fill_manual("sentiment", values = c("anger" = "red", "anticipation" = "blue", "disgust" = "red",  "fear" = "red", "joy" = "blue", "negative" = "red", "positive" = "blue" , "sadness" = "red", "surprise" = "blue", "trust" = "blue"))
+  scale_fill_manual("sentiment", values = c("anger" = "firebrick2", "anticipation" = "deepskyblue2", "disgust" = "firebrick2",  "fear" = "firebrick2", "joy" = "deepskyblue2", "negative" = "firebrick2", "positive" = "deepskyblue2" , "sadness" = "firebrick2", "surprise" = "deepskyblue2", "trust" = "deepskyblue2"))
 
 fnrc <- ggplot(forum_nrc, aes(x="", fill=sentiment)) +
   geom_bar(width = 1) +
@@ -297,14 +307,15 @@ fnrc <- ggplot(forum_nrc, aes(x="", fill=sentiment)) +
   theme(axis.title.y=element_blank(),
         axis.text.y=element_blank(),
         axis.ticks.y=element_blank()) + 
-  scale_fill_manual("sentiment", values = c("anger" = "red", "anticipation" = "blue", "disgust" = "red",  "fear" = "red", "joy" = "blue", "negative" = "red", "positive" = "blue" , "sadness" = "red", "surprise" = "blue", "trust" = "blue"))
+  scale_fill_manual("sentiment", values = c("anger" = "firebrick2", "anticipation" = "deepskyblue2", "disgust" = "firebrick2",  "fear" = "firebrick2", "joy" = "deepskyblue2", "negative" = "firebrick2", "positive" = "deepskyblue2" , "sadness" = "firebrick2", "surprise" = "deepskyblue2", "trust" = "deepskyblue2"))
 
 cowplot::plot_grid(fnrc, rnrc)
+```
 
-
+```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE, fig.width=4, fig.height=4, fig.align="center"}
 ggplot(withouttwitter_nrc, aes(x="", fill=sentiment)) +
   geom_bar(width = 1) +
-  ggtitle("Overwatch Community as a Whole")  +
+  ggtitle("Both Communities")  +
   xlab("Sentiment") +
   theme(axis.title.y=element_blank(),
         axis.text.y=element_blank(),
@@ -312,6 +323,8 @@ ggplot(withouttwitter_nrc, aes(x="", fill=sentiment)) +
 
 
 ```
+
+\newpage
 
 ## Distribution of Negativity Among the Three Communities
 We see that positivity is high for both communities,  but in the Overwatch Forums and reddit communities, the negative sentiments (negative scores) are still rather proportionally high. Again these communities are similar in terms of the sentiments they are sharing. When the two communities are combined, the plots don't change much further reinforcing the idea the similarity in thoughts and opinions. 
@@ -333,7 +346,8 @@ ra <- ggplot(reddit_afinn, aes(x=score)) +
   scale_x_continuous(breaks = -5:5) 
 
 cowplot::plot_grid(fa, ra, labels = "AUTO")
-
+```
+```{r, eval=TRUE, warning=FALSE, message=FALSE, echo=FALSE,  fig.width=3, fig.height=3, fig.align="center"}
 ggplot(withouttwitter_afinn, aes(x=score)) +
   geom_bar(aes(y=..count.., fill=..count..)) + 
   labs(x="afinn score") +
@@ -342,7 +356,6 @@ ggplot(withouttwitter_afinn, aes(x=score)) +
   scale_x_continuous(breaks = -5:5) 
 
 ```
-
 
 ## Conclusion
 With this exploration of data, we get a high level overview of the Overwatch community's sentiment. Negative sentiment may be a concern since several of the plots seem to show a relatively high amount of negativity. Additionally there seems to be a lot of discussion around the character Mercy. It may be that the two are related and more data and research would be needed to corroborate this theory. 
