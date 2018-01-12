@@ -64,6 +64,25 @@ names(twittersentiment) <- c("forum_text","sentiment_score","negative")
 write.csv(twittersentiment, file="twitterduplicatesgone.csv")
 
 
+#----------------AFINN SENTIMENT----------------#
+#Get sentiment for each word using the afinn lexicon
+twitter_sentimentafinn <- tidy_twitter %>%
+  inner_join(get_sentiments("afinn"))
+
+#create this column to help calculate sentiment score 
+twitter_sentimentafinn$count <- 1
+
+#calculate sentiment score using afinn
+twitter_sentimentafinn <- twitter_sentimentafinn %>%
+  group_by(text_topic) %>%
+  mutate(sentimentscore = sum(score)/sum(count))
+
+#collapse the duplicated columns by text_topic
+twitter_sentimentafinn <- twitter_sentimentafinn[!duplicated(twitter_sentimentafinn$text_topic),]
+
+write.csv(twitter_sentimentafinn, file = "twitter_afinn_sentiment.csv")
+
+
 #Create a corpus and remove unnecessary words/text
 #Corpus is necessary to do predictive analytics
 owcorpus <- Corpus(VectorSource(twittersentiment$forum_text))

@@ -71,7 +71,25 @@ redditsentiment <- data.frame(reddit_sentimentbing$text_topic, reddit_sentimentb
 names(redditsentiment) <- c("forum_text","sentiment_score","negative")
 
 #test code
-write.csv(redditsentiment, file="redditduplicatesgone.csv")
+write.csv(redditsentiment, file="redditduplicatesgone2.csv")
+
+#----------------AFINN SENTIMENT----------------#
+#Get sentiment for each word using the afinn lexicon
+reddit_sentimentafinn <- tidy_reddit %>%
+  inner_join(get_sentiments("afinn"))
+
+#create this column to help calculate sentiment score 
+reddit_sentimentafinn$count <- 1
+
+#calculate sentiment score using afinn
+reddit_sentimentafinn <- reddit_sentimentafinn %>%
+  group_by(X.) %>%
+  mutate(sentimentscore = sum(score)/sum(count))
+
+#collapse the duplicated columns by text_topic
+reddit_sentimentafinn <- reddit_sentimentafinn[!duplicated(reddit_sentimentafinn$text_topic),]
+
+write.csv(reddit_sentimentafinn, file = "reddit_afinn_sentiment.csv")
 
 
 #Create a corpus and remove unnecessary words/text

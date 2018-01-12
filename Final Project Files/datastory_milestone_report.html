@@ -137,52 +137,138 @@ $(document).ready(function () {
 </div>
 <div id="data-set" class="section level2">
 <h2>Data Set</h2>
-<p>The data was gathered from three online communities relating to Overwatch: Twitter, the official Overwatch forums, and the Overwatch subreddit on Reddit. A script was written for each site that scraped text comments from each site respectively. Additional data such as user name, time of post, link to post was gathered for each text comment, however these were not used in the development of the algorithm. All data was gathered on the same day: December 22, 2017.</p>
+<p>The data was gathered from three online communities relating to Overwatch: Twitter, the official Overwatch forums, and the Overwatch subreddit on Reddit. A script scraping text comments for each site was written. Additional data such as user name, time of post, link to post was gathered for each text comment, however these were not used in the development of the algorithm. All data was gathered on the same day: December 22, 2017.</p>
 <div id="limitations-of-data-set" class="section level3">
 <h3>Limitations of Data Set</h3>
-<p>This data set does not contain any actual in game chat text, which is where toxicity would be reported. Additionally, this data does not contain human ratings for the sentiment of the text; the bing lexicon in R was used to determine the sentiment scores. This poses a problem since the language of gamers has specific nuances that may not be caught by this library. Additionally, words like ‘kill’ or ‘Mercy’ are commonly used in Overwatch to describe actions in the game, but carry a neutral sentiment. Since the bing lexicon was used, it may be inaccurate in identifying the true sentiment of a statement.</p>
+<p>This data set does not contain any actual in game chat text, which is where toxicity would be reported. Additionally, this data does not contain human ratings for the sentiment of the text; the bing and afinn lexicons were used to determine the sentiment scores. Although these lexicons are useful for detecting sentiment in normal speech, the language of gamers has specific nuances that may not be caught or misclassified by this library. For example, words like ‘kill’ or ‘Mercy’ are commonly used in Overwatch to describe actions in the game, but may carry a neutral sentiment.</p>
 </div>
 <div id="data-preparation" class="section level3">
 <h3>Data Preparation</h3>
-<p>Each text comment was first tokenized and analyzed for sentiment using the bing lexicon from the tidytext library. The score from each of the words was used to calculate the overall sentiment of a given text comment using the formula:</p>
-<p><span class="math display">\[Sentiment.score.of.single.comment = \frac{∑(bing.score.of.words)}{total.words.in.comment}\]</span></p>
+<p>Each text comment was first tokenized and analyzed for sentiment using the bing and afinn lexicons from the tidytext library. The score from each of the words was used to calculate the overall sentiment of a given text comment using the formula:</p>
+<p><span class="math display">\[Sentiment.score.of.single.comment = \frac{∑(score.of.words)}{total.words.in.comment}\]</span></p>
 <p>Since each comment may have a varying amount of words, this formula was used to normalize the values between comments so direct comparisons could be done.</p>
 </div>
+</div>
+<div id="code" class="section level2">
+<h2>Code</h2>
+<p>Below is the code used to determine the sentiment for each comment. Only the Overwatch forums is shown below, but this method is also done for reddit and Twitter.</p>
+<pre class="r"><code>library(dplyr)
+library(tidytext)
+library(tm)
+library(caTools)
+
+
+#----------------PULL DATA FROM FILE &amp; TOKENIZE----------------#
+#read owforums data into R. Ensure they are not factors
+owforums &lt;- read.csv(&quot;OWFORUMS12_22_FINAL.csv&quot;, stringsAsFactors = FALSE)
+
+#duplicating the text column so we have a copy of the text. this text is destroyed during tokenization
+owforums$text_topic &lt;- owforums$text
+
+#tokenize the text column
+tidy_owforums &lt;- owforums %&gt;%
+  group_by(X.) %&gt;%
+  mutate(linenumber = row_number()) %&gt;%
+  unnest_tokens(word, text) %&gt;%
+  ungroup()
+
+#----------------BING SENTIMENT----------------#
+
+#get the sentiment for the tokenized words
+owforums_sentimentbing &lt;- tidy_owforums %&gt;%
+  inner_join(get_sentiments(&quot;bing&quot;))
+
+#create new columns to use in for loop calculations. we will calculate the sentiment score by adding all the sentiments and dividing by number of sentiments.
+owforums_sentimentbing$score &lt;- 0
+owforums_sentimentbing$count &lt;- 1
+
+#this for loops codes the sentiment from bing sentiment into a -1 or 1. 1 is positive and -1 is negative. Also counts the number of sentiment words to be used later.
+for(i in 1:length(owforums_sentimentbing$sentiment)) {
+  if(owforums_sentimentbing$sentiment[i] == &quot;negative&quot;) {
+    print(&quot;negative&quot;)
+    owforums_sentimentbing$score[i] = -1
+  } else {
+    print(&quot;positive&quot;)
+    owforums_sentimentbing$score[i] = 1
+  }
+}
+
+#this calculates the sentiment score by adding up all sentiment values and dividing it by the total for a single post. X. is used since it identifies if a word belongs to a single post.
+owforums_sentimentbing &lt;- owforums_sentimentbing %&gt;%
+  group_by(X.) %&gt;%
+  mutate(sentimentscore = sum(score)/sum(count))
+
+#identify the negative values. this is used later to predict negative sentiment
+owforums_sentimentbing$negative &lt;- as.factor(owforums_sentimentbing$sentimentscore &lt; 0)
+table(owforums_sentimentbing$negative)
+
+#collapse the duplicated columns by text_topic
+owforums_sentimentbing &lt;- owforums_sentimentbing[!duplicated(owforums_sentimentbing$text_topic),]
+
+#----------------AFINN SENTIMENT----------------#
+owforums_sentimentafinn &lt;- tidy_owforums %&gt;%
+  inner_join(get_sentiments(&quot;afinn&quot;))
+
+owforums_sentimentafinn$count &lt;- 1
+
+owforums_sentimentafinn &lt;- owforums_sentimentafinn %&gt;%
+  group_by(X.) %&gt;%
+  mutate(sentimentscore = sum(score)/sum(count))
+
+owforums_sentimentafinn &lt;- owforums_sentimentafinn[!duplicated(owforums_sentimentafinn$text_topic),]</code></pre>
 <div id="preliminary-findings-in-data" class="section level3">
 <h3>Preliminary Findings in Data</h3>
-<p>To determine how toxic a community was in comparison to others, an average of the sentiment scores for each comment was calculated. By doing this, we can also validate the notion that Overwatch communities may suffer from a toxicity problem. Below is a table of the scores:</p>
+<p>To determine how toxic a community was in comparison to others, an average of the sentiment scores for each comment was calculated. Below are the tables of the scores:</p>
 <table>
 <thead>
 <tr class="header">
 <th>Online Community/Website</th>
-<th>Sentiment Score</th>
+<th>Sentiment Score (Bing)</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td>Twitter</td>
-<td>0.277143</td>
+<td>0.27714</td>
 </tr>
 <tr class="even">
 <td>Reddit</td>
-<td>0.138521</td>
+<td>0.13860</td>
 </tr>
 <tr class="odd">
 <td>Official Overwatch Forums</td>
-<td>0.115945</td>
-</tr>
-<tr class="even">
-<td>Combined (All)</td>
-<td>0.220478</td>
+<td>0.11594</td>
 </tr>
 </tbody>
 </table>
-<p>These scores were loosely validated by myself through reading through comments for each of these communities. Twitter seemed the most positive and people posted pictures and to alert others when they start streaming. Reddit had several negative comments, but not nearly as much as the official forums for Overwatch.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Online Community/Website</th>
+<th>Sentiment Score (Afinn)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Twitter</td>
+<td>1.00597</td>
+</tr>
+<tr class="even">
+<td>Reddit</td>
+<td>0.53664</td>
+</tr>
+<tr class="odd">
+<td>Official Overwatch Forums</td>
+<td>0.38761</td>
+</tr>
+</tbody>
+</table>
+<p>These scores confirms what we saw during the exploratory statistics of this data.</p>
 </div>
 </div>
 <div id="approach" class="section level2">
 <h2>Approach</h2>
-<p>The approach I will be taking for this project is different from my original proposal. I originally wanted to identify a way to see what items/topics were possibly causing negativity. This information could then be used to inform the designers on how they should proceed in designing their games. I decided against this for a few reasons. First, game design is often full of nuance and intuition and while people may complain on internet forums, the vast majority may actually agree with or like the changes made to a game; the vocal minority does not represent the vast majority. Second, I did not quite have the tools available to perform this kind of analysis. Lastly, this algorithm to detect negative language will provide a a more immediate solution to a complicated problem.</p>
+<p>The approach that will be taken for this project is different from the original proposal. I originally wanted to identify a way to see what items/topics were possibly causing negativity. I wanted to use this information to inform the designers on how they should proceed in designing their games. I decided against this for a few reasons. First, game design is often full of nuance and intuition and while people may complain on internet forums, the vast majority may actually agree with or like the changes made to a game; the vocal minority does not represent the vast majority. Second, the tools required to perform this kind of analysis were not well understood by myself. Lastly, this algorithm to detect negative language will provide a a more immediate solution to a complicated problem that requires more investigation.</p>
 </div>
 </div>
 

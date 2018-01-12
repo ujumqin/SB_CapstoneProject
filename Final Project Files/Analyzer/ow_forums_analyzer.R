@@ -1,14 +1,12 @@
 library(dplyr)
 library(tidytext)
 library(tm)
-library(SnowballC)
-library(ggplot2)
 library(caTools)
 library(rpart.plot)
 library(randomForest)
 library(caret)
-library(e1071)
 
+#----------------PULL DATA FROM FILE & TOKENIZE----------------#
 #read owforums data into R. Ensure they are not factors
 owforums <- read.csv("OWFORUMS12_22_FINAL.csv", stringsAsFactors = FALSE)
 
@@ -21,6 +19,8 @@ tidy_owforums <- owforums %>%
   mutate(linenumber = row_number()) %>%
   unnest_tokens(word, text) %>%
   ungroup()
+
+#----------------BING SENTIMENT----------------#
 
 #get the sentiment for the tokenized words
 owforums_sentimentbing <- tidy_owforums %>%
@@ -50,20 +50,42 @@ owforums_sentimentbing <- owforums_sentimentbing %>%
 owforums_sentimentbing$negative <- as.factor(owforums_sentimentbing$sentimentscore < 0)
 table(owforums_sentimentbing$negative)
 
-
 #collapse the duplicated columns by text_topic
 owforums_sentimentbing <- owforums_sentimentbing[!duplicated(owforums_sentimentbing$text_topic),]
 
+write.csv(owforums_sentimentbing, file = "bing_sentiment.csv")
+
+
+#----------------AFINN SENTIMENT----------------#
+#Get sentiment for each word using the afinn lexicon
+owforums_sentimentafinn <- tidy_owforums %>%
+  inner_join(get_sentiments("afinn"))
+
+#create this column to help calculate sentiment score 
+owforums_sentimentafinn$count <- 1
+
+#calculate sentiment score using afinn
+owforums_sentimentafinn <- owforums_sentimentafinn %>%
+  group_by(X.) %>%
+  mutate(sentimentscore = sum(score)/sum(count))
+
+#collapse the duplicated columns by text_topic
+owforums_sentimentafinn <- owforums_sentimentafinn[!duplicated(owforums_sentimentafinn$text_topic),]
+
+write.csv(owforums_sentimentafinn, file = "afinn_sentiment.csv")
+
+#----------------PREP DATA FOR MACHINE LEARNING----------------#
+
 #create a new df without all of the unnecessary data
-owsentiment <- data.frame(owforums_sentimentbing$text_topic, owforums_sentimentbing$sentimentscore, owforums_sentimentbing$negative)
-names(owsentiment) <- c("forum_text","sentiment_score","negative")
+owsentiment_bing <- data.frame(owforums_sentimentbing$text_topic, owforums_sentimentbing$sentimentscore, owforums_sentimentbing$negative)
+names(owsentiment_bing) <- c("forum_text","sentiment_score","negative")
 
 #testcode
-write.csv(owsentiment, file="forumssentiment.csv")
+write.csv(owsentiment_bing, file="forumssentiment_bing.csv")
 
 #Create a corpus and remove unnecessary words/text
 #Corpus is necessary to do predictive analytics
-owcorpus <- Corpus(VectorSource(owsentiment$forum_text))
+owcorpus <- Corpus(VectorSource(owsentiment_bing$forum_text))
 
 owcorpus <- tm_map(owcorpus, removePunctuation)
 owcorpus <- tm_map(owcorpus, tolower)
@@ -85,7 +107,7 @@ colnames(owpostSparses) = make.names(colnames(owpostSparses))
 write.csv(owpostSparses, file="owpostspare.csv")
 
 #add dependent variable to the dataframe. We will be predicting this value.
-owpostSparses$negative <- owsentiment$negative
+owpostSparses$negative <- owsentiment_bing$negative
 
 #setting a seed to get consistent results when running multiple times
 set.seed(1113)
