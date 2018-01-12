@@ -124,6 +124,8 @@ prp(forumCART)
 
 #method for obtaining CP to try to fit a better model using cross-validation
 fitOWControl = trainControl(method="cv",number=10)
+
+#figure out numbers again. why did I need to alter these values?
 cartGrid <- expand.grid(.cp=(1:50)*0.00001)
 train(negative ~., data=trainow, method="rpart", trControl=fitOWControl, tuneGrid=cartGrid)
 
