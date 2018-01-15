@@ -4,7 +4,6 @@ author: "Sine Gov"
 date: "January 14, 2018"
 output:
   pdf_document: default
-  html_document: default
 ---
 
 ```{r setup, include=FALSE}
