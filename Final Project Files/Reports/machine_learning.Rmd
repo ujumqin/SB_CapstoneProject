@@ -308,7 +308,8 @@ cartGrid <- expand.grid(.cp=(1:50)*0.00001)
 cpmaker <- function(traindata,fold,increment) {
   fitOWControl = trainControl(method="cv",number=fold)
   cartGrid <- expand.grid(.cp=(1:50)*increment)
-  cpvalue <- train(negative ~., data=traindata, method="rpart", trControl=fitOWControl, tuneGrid=cartGrid)
+  cpvalue <- train(negative ~., data=traindata, method="rpart", 
+                   trControl=fitOWControl, tuneGrid=cartGrid)
   return(cpvalue)
 }
 
