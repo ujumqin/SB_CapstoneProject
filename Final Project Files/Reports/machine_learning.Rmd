@@ -112,11 +112,15 @@ bing_maker <- function(tidy_data) {
   bing_data <- tidy_data %>%
     inner_join(get_sentiments("bing"))
   
-  #create new columns to use in for loop calculations. we will calculate the sentiment score by adding all the sentiments and dividing by number of sentiments.
+  #create new columns to use in for loop calculations.
+  #we will calculate the sentiment score by adding 
+  #all the sentiments and dividing by number of sentiments.
   bing_data$score <- 0
   bing_data$count <- 1
   
-  #for loops codes the sentiment from bing sentiment into a -1 or 1. 1 is positive and -1 is negative. Also counts the number of sentiment words to be used later.
+  #for loops codes the sentiment from bing sentiment into a -1 or 1. 
+  #1 is positive and -1 is negative. 
+  #Also counts the number of sentiment words to be used later.
   for(i in 1:length(bing_data$sentiment)) {
     if(bing_data$sentiment[i] == "negative") {
       bing_data$score[i] = -1
@@ -125,7 +129,9 @@ bing_maker <- function(tidy_data) {
     }
   }
   
-  #calculates the sentiment score by adding up all sentiment values and dividing it by the total for a single post. text_topic is used since it identifies if a word belongs to a single comment.
+  #calculates the sentiment score by adding up all sentiment values 
+  #and dividing it by the total for a single post. 
+  #text_topic is used since it identifies if a word belongs to a single comment.
   bing_data <- bing_data %>%
     group_by(text_topic) %>%
     mutate(sentimentscore = sum(score)/sum(count))
@@ -168,7 +174,9 @@ afinn_maker <- function(tidy_data) {
   
   afinn_data$negative <- 0
   
-  #for loops codes the sentiment from bing sentiment into a -1 or 1. 1 is positive and -1 is negative. Also counts the number of sentiment words to be used later.
+  #for loops codes the sentiment from bing sentiment into a -1 or 1.
+  #1 is positive and -1 is negative. 
+  #Also counts the number of sentiment words to be used later.
   for(i in 1:length(afinn_data$sentiment_score)) {
     if(afinn_data$sentiment_score[i] < 0) {
       afinn_data$negative[i] = "TRUE"
@@ -248,7 +256,8 @@ set.seed(1113)
 
 #split the data into a training set and a test set. 
 
-#set the SplitRatio into variable so we can modify easily for all data sets. This ratio will go into the test set (20% goes into test set)
+#set the SplitRatio into variable so we can modify easily for all data sets. 
+#This ratio will go into the test set (20% goes into test set)
 sr <- 0.2
 
 
