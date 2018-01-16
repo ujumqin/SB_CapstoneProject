@@ -1,8 +1,7 @@
-This folder contains the Springboard capstone project for Sine. In this project
+This folder contains the Springboard capstone project for Sine. 
 -------------------------------------------------- 
 
 Directory
 --------------------------------------------------
-Final Project Files - This folderr will contain all of the updated files to run this project.
+Final Project Files - This folder contains all of the updated files to run this project.
 
-OLD DATA - Data kept for historical purposes.
