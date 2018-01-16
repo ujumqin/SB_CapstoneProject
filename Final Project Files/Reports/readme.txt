@@ -14,3 +14,7 @@ datastory_milestone_report.rmd- Rmarkdown code used to generate pdf.
 exploratory_statistics.pdf - Report showing the statistics run for the project. 
 
 exploratory_statistics.rmd- Rmarkdown code used to generate pdf.
+
+machine_learning.pdf - Report discussing the machine learning component of this project. Full code included in appendix.
+
+machine_learning.rmd - Rmarkdown code used to generate pdf.
