@@ -6,14 +6,14 @@ library(reshape2)
 library(RCurl)
 
 #read owforums data into R. Ensure they are not factors
-reddit <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/reddit12_22.csv"), stringsAsFactors = FALSE)
-#reddit <- read.csv("reddit12_22.csv", stringsAsFactors = FALSE)
-twitter <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWT_12-22.csv"), stringsAsFactors = FALSE)
-#twitter <- read.csv("OWT_12-22.csv", stringsAsFactors = FALSE)
-forums <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWFORUMS12_22_FINAL.csv"), stringsAsFactors = FALSE)
-#forums <- read.csv("OWFORUMS12_22_FINAL.csv", stringsAsFactors = FALSE)
-all <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/all.csv"), stringsAsFactors = FALSE)
-withouttwitter <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/WithoutTwitter_FINAL.csv"), stringsAsFactors = FALSE)
+#reddit <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/reddit12_22.csv"), stringsAsFactors = FALSE)
+reddit <- read.csv("REDDIT_12_22_FINAL.CSV", stringsAsFactors = FALSE)
+#twitter <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWT_12-22.csv"), stringsAsFactors = FALSE)
+twitter <- read.csv("OWTWITTER_12-22_FINAL.csv", stringsAsFactors = FALSE)
+#forums <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWFORUMS12_22_FINAL.csv"), stringsAsFactors = FALSE)
+forums <- read.csv("OWFORUMS12_22_FINAL.CSV", stringsAsFactors = FALSE)
+#all <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/all.csv"), stringsAsFactors = FALSE)
+#withouttwitter <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/WithoutTwitter_FINAL.csv"), stringsAsFactors = FALSE)
 
 
 #duplicating the text column so we have a copy of the text. this text is used to group
@@ -82,7 +82,6 @@ withouttwitter_bing <- tidy_notwitter %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
   ungroup()
-
 
 #-------------------------Plotting Data (Bing)-------------------------
 reddit_bing %>%

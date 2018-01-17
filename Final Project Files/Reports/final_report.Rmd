@@ -1,0 +1,25 @@
+---
+title: "Springboard Capstone Project - Sentiment Predictor for Overwatch"
+author: "Sine Gov"
+date: "January 15, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction to Overwatch
+
+Overwatch is a team based First Person Shooter video game that is played online with other people. As a team, your goal is to secure objectives while fighting off the other team. Each person can select from 26 characters and each character falls into one of four roles; Offense, Defense, Tank, or Healing. The composition of the team factors to your success in the matches. During a match, you have the ability to chat and emote certain actions you would like to take in the game. 
+
+Overwatch is an ever changing game with new characters added to the game and changes to abilities or mechanics. These changes to a characters abilities, also known as balance, are done to help keep the characters from being too powerful, too weak, and to address explotable bugs within the character's ability kit. If a character is too powerful, matches in Overwatch will become predictable causing players to stop playing. If you make a character too weak, you limit the options players and may cause them to be frustrated if they can't play their favorites.  Additionally if a person chooses a weak character they may become victims to toxic behavior or language; players on their team may blame them for loosing or harrass them into playing a different character. This behavior becomes a drag on the community and these players may voice their frustrations on social media.
+
+Another feature of Overwatch are cosmetic costumes, also known as skins, a player can achieve through playing or purchasing. With new patches, skins and special events are added to help keep the game exciting and fresh.
+
+## Social Media
+
+Social media is a powerful tool that the developers of Overwatch can use. From social media, not only can they communicate upcoming news and changes, they can also get a gauge of the community's feelings or thoughts about different aspects of the game. Additionally they can hear reactions of the community after balance changes. Of course, these communities don't necessarily represent the totality of the player base, but it can still provide some useful information.    
+
+In order to review comments on social media it is often a manual process; someone needs to go through and read each comment and from that they can gain an understanding of the key issues the communitiy is discussing. This analysis attempts to automate this process to gather the major trends at a high level. Social media Text data has been collected from Twitter, Reddit, and the Official Overwatch forums. Below they are analyzed using three sentiment lexicons: bing, nrc, and afinn. The goal of this analysis is to determine whether we can see any trends in the data through this method.   
+
