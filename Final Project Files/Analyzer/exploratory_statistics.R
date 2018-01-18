@@ -6,21 +6,21 @@ library(reshape2)
 library(RCurl)
 
 #read owforums data into R. Ensure they are not factors
-#reddit <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/reddit12_22.csv"), stringsAsFactors = FALSE)
-reddit <- read.csv("REDDIT_12_22_FINAL.CSV", stringsAsFactors = FALSE)
-#twitter <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWT_12-22.csv"), stringsAsFactors = FALSE)
-twitter <- read.csv("OWTWITTER_12-22_FINAL.csv", stringsAsFactors = FALSE)
-#forums <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWFORUMS12_22_FINAL.csv"), stringsAsFactors = FALSE)
-forums <- read.csv("OWFORUMS12_22_FINAL.CSV", stringsAsFactors = FALSE)
-#all <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/all.csv"), stringsAsFactors = FALSE)
-#withouttwitter <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/WithoutTwitter_FINAL.csv"), stringsAsFactors = FALSE)
+reddit <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/REDDIT_12_22_FINAL.csv"), stringsAsFactors = FALSE)
+twitter <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWTWITTER_12-22_FINAL.csv"), stringsAsFactors = FALSE)
+forums <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWFORUMS12_22_FINAL.csv"), stringsAsFactors = FALSE)
+withouttwitter <- read.csv(text=getURL("https://raw.githubusercontent.com/ujumqin/SB_CapstoneProject/master/Final%20Project%20Files/OW%20Data/Raw%20Files/OWFORUMS%26REDDIT_12_22_FINAL.csv"), stringsAsFactors = FALSE)
+
+
+#reddit <- read.csv("REDDIT_12_22_FINAL.CSV", stringsAsFactors = FALSE)
+#twitter <- read.csv("OWTWITTER_12-22_FINAL.csv", stringsAsFactors = FALSE)
+#forums <- read.csv("OWFORUMS12_22_FINAL.CSV", stringsAsFactors = FALSE)
 
 
 #duplicating the text column so we have a copy of the text. this text is used to group
 reddit$text_topic <- reddit$X.text.
 twitter$text_topic <- twitter$text
 forums$text_topic <- forums$text
-all$text_topic <- all$text
 withouttwitter$text_topic <- withouttwitter$text
 
 #-------------------------Tokenize Text-------------------------
@@ -45,12 +45,6 @@ tidy_forums <- forums %>%
   unnest_tokens(word, text) %>%
   ungroup()
 
-tidy_all <- all %>%
-  group_by(X.) %>%
-  dplyr::mutate(linenumber = row_number()) %>%
-  unnest_tokens(word, text) %>%
-  ungroup()
-
 tidy_notwitter <- withouttwitter %>%
   group_by(X.) %>%
   dplyr::mutate(linenumber = row_number()) %>%
@@ -69,11 +63,6 @@ twitter_bing <- tidy_twitter %>%
   ungroup()
 
 forum_bing <- tidy_forums %>%
-  inner_join(get_sentiments("bing")) %>%
-  count(word, sentiment, sort = TRUE) %>%
-  ungroup()
-
-all_bing <- tidy_all %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
   ungroup()
@@ -120,18 +109,6 @@ forum_bing %>%
        x = NULL) +
   coord_flip()
 
-all_bing %>%
-  group_by(sentiment) %>%
-  top_n(10) %>%
-  ungroup() %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(word, n, fill = sentiment)) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~sentiment, scales = "free_y") +
-  labs(y = "Most Used Sentiment Words By Overwatch Community",
-       x = NULL) +
-  coord_flip()
-
 withouttwitter_bing %>%
   group_by(sentiment) %>%
   top_n(10) %>%
@@ -151,9 +128,6 @@ twitter_nrc <- tidy_twitter %>%
   inner_join(get_sentiments("nrc"))
 
 forum_nrc <- tidy_forums %>%
-  inner_join(get_sentiments("nrc"))
-
-all_nrc <- tidy_all %>%
   inner_join(get_sentiments("nrc"))
 
 withouttwitter_nrc <- tidy_all %>%
@@ -203,9 +177,6 @@ twitter_afinn <- tidy_twitter %>%
   inner_join(get_sentiments("afinn"))
 
 forum_afinn <- tidy_forums %>%
-  inner_join(get_sentiments("afinn"))
-
-all_afinn <- tidy_all %>%
   inner_join(get_sentiments("afinn"))
 
 withouttwitter_afinn <- tidy_notwitter %>%
@@ -282,7 +253,7 @@ tidy_forums %>%
   comparison.cloud(colors = c("gray20", "gray80"),
                    max.words = 80)
 
- tidy_reddit %>%
+tidy_reddit %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%

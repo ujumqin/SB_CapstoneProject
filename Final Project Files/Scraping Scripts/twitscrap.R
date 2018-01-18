@@ -3,8 +3,8 @@ library(ROAuth)
 # Download "cacert.pem" file
 download.file(url="http://curl.haxx.se/ca/cacert.pem",destfile="cacert.pem")
 
-cred <- OAuthFactory$new(consumerKey="iIqt5d6bpRKF37RaWdyqJLAWJ",
-                         consumerSecret="qQc7iiYZddit7EBhnJEmJmTGSyDiK3MEIWqjW1x3CwJnmy7C6u",
+cred <- OAuthFactory$new(consumerKey="xxxxx",
+                         consumerSecret="xxxx",
                          requestURL='https://api.twitter.com/oauth/request_token',
                          accessURL='https://api.twitter.com/oauth/access_token',
                          authURL='https://api.twitter.com/oauth/authorize')
