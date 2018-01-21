@@ -130,7 +130,7 @@ twitter_nrc <- tidy_twitter %>%
 forum_nrc <- tidy_forums %>%
   inner_join(get_sentiments("nrc"))
 
-withouttwitter_nrc <- tidy_all %>%
+withouttwitter_nrc <- tidy_notwitter %>%
   inner_join(get_sentiments("nrc"))
 
 #-------------------------Plotting Data (nrc)-------------------------
@@ -138,17 +138,10 @@ ggplot(reddit_nrc, aes(x="", fill=sentiment)) +
   geom_bar(width = 1) +
   ggtitle("reddit") 
 
-reddit_bar
-
-reddit_bar + coord_polar("y")
 
 ggplot(forum_nrc, aes(x="", fill=sentiment)) +
   geom_bar(width = 1) +
   ggtitle("Overwatch Forums") 
-
-forum_bar
-
-forum_bar + coord_polar("y")
 
 
 ggplot(twitter_nrc, aes(x=sentiment)) +
@@ -229,11 +222,6 @@ tidy_reddit %>%
   with(wordcloud(word, n, max.words = 50))
 
 tidy_twitter %>%
-  anti_join(stop_words) %>%
-  count(word) %>%
-  with(wordcloud(word, n, max.words = 50))
-
-tidy_all %>%
   anti_join(stop_words) %>%
   count(word) %>%
   with(wordcloud(word, n, max.words = 50))
